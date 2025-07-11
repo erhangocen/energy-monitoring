@@ -1,8 +1,58 @@
-# Energy Monitoring UI
+# ⚡️ Energy Monitoring UI
 
 Modern ve ölçeklenebilir bir enerji izleme sistemi için React tabanlı admin paneli.
 
-## 🚀 Hızlı Başlangıç
+---
+
+## 🏗️ Temel Altyapı & Mimarisi
+
+> 🧩 **Bu proje, kendi geliştirdiğim [react-admin-architecture-template](https://github.com/erhangocen/react-admin-architecture-template) projesi temel alınarak oluşturulmuştur.**
+>
+> - Template, modern React projeleri için ölçeklenebilir, domain'den bağımsız bir başlangıç mimarisi sunar.
+> - Kolayca kendi iş kurallarınızı ve veri modellerinizi entegre edebilirsiniz.
+
+---
+
+## 🏛️ MVVM Pattern & Avantajları
+
+- **MVVM (Model-View-ViewModel)** yaklaşımı ile kodunuzu katmanlara ayırır:
+  - **Model:** Veri ve iş kuralları
+  - **View:** UI componentleri
+  - **ViewModel:** UI ile model arasındaki mantık ve state yönetimi
+- **Avantajları:**
+  - Ayrık katmanlar sayesinde okunabilirlik ve sürdürülebilirlik artar
+  - Test yazmak ve refactor yapmak kolaylaşır
+  - Büyük projelerde ekip çalışmasını kolaylaştırır
+
+---
+
+## 🛠️ Kullanılan Teknolojiler & Kütüphaneler
+
+### 🎨 UI & Componentler
+- **Shadcn UI** & **Radix UI** — Modern, erişilebilir ve özelleştirilebilir componentler
+- **Lucide React** — Modern ikonlar
+- **TailwindCSS** — Utility-first CSS framework
+- **Framer Motion** — Animasyonlar
+
+### 🧩 State & Form Yönetimi
+- **@tanstack/react-query** — Server state management, cache
+- **React Hook Form** — Form yönetimi
+- **Zod** — Şema tabanlı doğrulama
+
+### 📊 Grafik & Veri Görselleştirme
+- **ECharts** & **Recharts** — Güçlü grafik ve chart kütüphaneleri
+
+### 🔗 Network & API
+- **Axios** — HTTP istekleri
+
+### 🛠️ Diğerleri
+- **dayjs** — Tarih işlemleri
+- **clsx** & **class-variance-authority** — Dinamik className yönetimi
+- **jwt-decode** — JWT token çözümleme
+
+---
+
+## ⚡️ Hızlı Başlangıç
 
 ### Gereksinimler
 - Node.js 18.x+
@@ -24,50 +74,9 @@ pnpm install
 pnpm dev
 ```
 
-Uygulama http://localhost:5174 adresinde çalışacaktır.
+Uygulama [http://localhost:5173](http://localhost:5173) adresinde çalışacaktır.
 
-## 📚 Detaylı Kurulum
-
-Kapsamlı kurulum rehberi için [setup.md](./setup.md) dosyasını inceleyin.
-
-## 🐳 Docker ile Kurulum
-
-### Development
-```bash
-docker-compose --profile dev up
-```
-
-### Production
-```bash
-docker-compose up --build
-```
-
-## 🛠️ Kullanılan Teknolojiler
-
-### Frontend Framework
-- **React 18** - Modern React hooks ve concurrent features
-- **TypeScript** - Tip güvenliği
-- **Vite** - Hızlı build tool
-
-### UI & Styling
-- **TailwindCSS** - Utility-first CSS framework
-- **Radix UI** - Erişilebilir component primitives
-- **Lucide React** - Modern ikonlar
-- **Framer Motion** - Animasyonlar
-
-### State Management & Data Fetching
-- **@tanstack/react-query** - Server state management
-- **React Hook Form** - Form yönetimi
-- **Zod** - Şema doğrulama
-
-### Charts & Data Visualization
-- **ECharts** - Güçlü grafik kütüphanesi
-- **Recharts** - React tabanlı grafikler
-
-### Development Tools
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-- **Husky** - Git hooks (opsiyonel)
+---
 
 ## 📁 Proje Yapısı
 
@@ -88,54 +97,31 @@ src/
 └── assets/        # Statik dosyalar
 ```
 
-## 🔧 Konfigürasyon
+---
 
-### Environment Variables
-```bash
-# API Configuration
-VITE_API_BASE_URL=http://localhost:3000
-VITE_API_TIMEOUT=30000
-
-# Application
-VITE_APP_NAME=Energy Monitoring UI
-VITE_APP_ENVIRONMENT=development
-```
+## 🚀 Build & Deployment
 
 ### Build Scripts
 ```bash
 pnpm dev          # Development server
 pnpm build        # Production build
-pnpm build:prod   # Optimized production build
+pnpm build:prod   # Optimize production build
 pnpm preview      # Build preview
 ```
 
-## 🚀 Production Deployment
-
 ### Docker ile
 ```bash
-# Production build
-docker build -t energy-monitoring-ui .
-docker run -p 3000:80 energy-monitoring-ui
+docker-compose --profile dev up   # Development
+# veya
+docker-compose up --build         # Production
 ```
 
-### Manual Build
-```bash
-pnpm build:prod
-# dist/ klasöründeki dosyaları web sunucusuna deploy edin
-```
-
-## 🔍 Code Quality
-
-```bash
-pnpm lint         # ESLint kontrolü
-pnpm lint:fix     # Otomatik düzeltme
-pnpm format       # Prettier format
-pnpm type-check   # TypeScript kontrolü
-```
+---
 
 ## 📊 Özellikler
 
 - ✅ Modern React 18 mimarisi
+- ✅ MVVM pattern ile sürdürülebilir kod
 - ✅ TypeScript ile tip güvenliği
 - ✅ Responsive ve accessible UI
 - ✅ Dark/Light tema desteği
@@ -146,6 +132,8 @@ pnpm type-check   # TypeScript kontrolü
 - ✅ Comprehensive error handling
 - ✅ Internationalization ready
 
+---
+
 ## 🤝 Katkıda Bulunma
 
 1. Fork yapın
@@ -154,11 +142,15 @@ pnpm type-check   # TypeScript kontrolü
 4. Push yapın (`git push origin feature/amazing-feature`)
 5. Pull Request açın
 
+---
+
 ## 📞 Destek
 
 - 📖 [Setup Guide](./setup.md) - Detaylı kurulum rehberi
 - 🐛 [Issues](https://github.com/your-repo/issues) - Bug reports
 - 💬 [Discussions](https://github.com/your-repo/discussions) - Sorular ve öneriler
+
+---
 
 ## 📄 Lisans
 
@@ -166,4 +158,4 @@ Bu proje [MIT License](./LICENSE) altında lisanslanmıştır.
 
 ---
 
-**Energy Monitoring UI** - Modern enerji izleme sistemi için güçlü ve kullanıcı dostu arayüz.
+**Energy Monitoring UI** — Modern enerji izleme sistemi için güçlü ve kullanıcı dostu arayüz.
