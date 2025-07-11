@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+/// @seed="npx ts-node prisma/seed.ts"
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+  users     User[]
+  meters    Meter[]
+}
+
+model User {
+  id             String   @id @default(uuid())
+  name           String
+  email          String   @unique
+  passwordHash   String
+  role           Role
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  assignedMeters UserMeter[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+}
+
+enum Role {
+  admin
+  user
+}
+
+
+model Meter {
+  id             String   @id @default(uuid())
+  name           String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  readings MeterReading[]
+  assignedUsers UserMeter[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+  @@unique([name, organizationId])
+}
+
+
+model MeterReading {
+  id             String   @id @default(uuid())
+  meter          Meter    @relation(fields: [meterId], references: [id])
+  meterId        String
+  timestamp      DateTime
+  indexKwh       Float
+  consumptionKwh Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+  @@index([meterId, timestamp])
+}
+
+
+model UserMeter {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  meter  Meter  @relation(fields: [meterId], references: [id])
+  meterId String
+  createdAt DateTime @default(now())
+  isDeleted Boolean  @default(false)
+  @@id([userId, meterId])
+}
+

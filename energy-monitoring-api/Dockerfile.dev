@@ -1,0 +1,35 @@
+FROM --platform=linux/amd64 node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install
+
+# Copy source code
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Ensure the generated directory is properly set up
+RUN ls -la generated/prisma/
+
+# Copy generated Prisma client to dist folder for runtime
+RUN mkdir -p dist/generated && cp -r generated/prisma dist/generated/
+
+# Verify the copy worked
+RUN ls -la dist/generated/prisma/
+
+# Expose port
+EXPOSE 3000
+
+# Start development server
+CMD ["pnpm", "run", "start:dev"] 

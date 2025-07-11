@@ -1,0 +1,51 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: energy-monitoring-db
+    environment:
+      POSTGRES_DB: energy_monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - energy-monitoring-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Energy Monitoring API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: energy-monitoring-api
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/energy_monitoring
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      PORT: 3000
+      NODE_ENV: development
+      ALLOWED_ORIGINS: http://localhost:5174,http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - energy-monitoring-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "sleep 10 && pnpm run db:setup && pnpm run start:dev"
+
+volumes:
+  postgres_data:
+
+networks:
+  energy-monitoring-network:
+    driver: bridge 

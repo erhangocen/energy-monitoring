@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  api:
+    build: ./energy-monitoring-api
+    platform: linux/amd64
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./energy-monitoring-api/env.example
+    depends_on:
+      - db
+  ui:
+    build: ./energj-monitoring-ui
+    platform: linux/amd64
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./energj-monitoring-ui/env.example
+    depends_on:
+      - api
+  db:
+    image: postgres:15
+    platform: linux/amd64
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: energy_monitoring
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: 
