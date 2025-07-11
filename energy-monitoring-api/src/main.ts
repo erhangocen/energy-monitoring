@@ -17,16 +17,16 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   // Global validation pipe
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // Sadece DTO'da tanımlı alanları kabul et
-      forbidNonWhitelisted: true, // Tanımlı olmayan alanları reddet
-      transform: true, // Otomatik tip dönüşümü
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
+  /*   app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true, // Sadece DTO'da tanımlı alanları kabul et
+        forbidNonWhitelisted: true, // Tanımlı olmayan alanları reddet
+        transform: true, // Otomatik tip dönüşümü
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+      }),
+    ); */
 
   // Global error handler
   app.useGlobalInterceptors(new ErrorHandlerInterceptor());
@@ -47,8 +47,7 @@ async function bootstrap() {
       'http://localhost:5174',
     ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     maxAge: 86400, // 24 saat
   });
 

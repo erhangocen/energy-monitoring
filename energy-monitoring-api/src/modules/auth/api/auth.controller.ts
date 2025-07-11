@@ -19,10 +19,10 @@ import { Roles } from '../utils/decorators/roles.decorator';
 @ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('login')
-  @Throttle({ default: { ttl: 60000, limit: 5 } }) // 1 dakikada maksimum 5 login denemesi
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @ApiResponse({
     status: 201,
     description: 'Kullanıcı başarılı bir şekilde giriş sağladı.',
@@ -47,3 +47,5 @@ export class AuthController {
     await this.authService.deleteUser(id);
   }
 }
+
+
