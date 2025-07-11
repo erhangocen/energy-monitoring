@@ -11,57 +11,73 @@ async function main() {
     where: { id: 'default-org-id' },
     update: {},
     create: {
-      id: 'default-org-id',
       name: 'Default Organization',
-      isDeleted: false,
     },
   });
 
   console.log('✅ Organization created:', organization.name);
 
-  // Default admin user oluştur
+  // Default admin oluştur
   const hashedPassword = await bcrypt.hash('admin123', 10);
 
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@example.com' },
     update: {},
     create: {
-      name: 'Admin User',
+      name: 'Admin',
       email: 'admin@example.com',
       passwordHash: hashedPassword,
       role: 'admin',
-      organizationId: organization.id,
-      isDeleted: false,
     },
   });
 
   console.log('✅ Admin user created:', adminUser.email);
 
-  // Default meter oluştur
-  const defaultMeter = await prisma.meter.upsert({
-    where: { id: 'default-meter-id' },
+  // Default user oluştur
+  const userHashedPassword = await bcrypt.hash('user123', 10);
+
+  const user = await prisma.user.upsert({
+    where: { email: 'user@example.com' },
     update: {},
     create: {
-      id: 'default-meter-id',
+      name: 'User',
+      email: 'user@example.com',
+      organizationId: organization.id,
+      passwordHash: userHashedPassword,
+      role: 'user',
+    },
+  });
+
+  console.log('✅ User user created:', user.email);
+
+  // Default meter oluştur
+  const defaultMeter = await prisma.meter.upsert({
+    where: {
+      name_organizationId: {
+        name: 'METER-001',
+        organizationId: organization.id,
+      },
+    },
+    update: {},
+    create: {
       name: 'METER-001',
       organizationId: organization.id,
-      isDeleted: false,
     },
   });
 
   console.log('✅ Default meter created:', defaultMeter.name);
 
-  // Admin user'ı default meter'a bağla
+  // user'ı default meter'a bağla
   await prisma.userMeter.upsert({
     where: {
       userId_meterId: {
-        userId: adminUser.id,
+        userId: user.id,
         meterId: defaultMeter.id,
       },
     },
     update: {},
     create: {
-      userId: adminUser.id,
+      userId: user.id,
       meterId: defaultMeter.id,
       isDeleted: false,
     },
@@ -69,18 +85,28 @@ async function main() {
 
   console.log('✅ User-Meter connection created');
 
-  // Sample meter reading oluştur
-  const sampleReading = await prisma.meterReading.create({
-    data: {
-      meterId: defaultMeter.id,
-      timestamp: new Date(),
-      indexKwh: 100,
-      consumptionKwh: 100,
-      isDeleted: false,
-    },
-  });
+  const now = new Date();
+  let previousIndexKwh = 100; // initial indexKwh
 
-  console.log('✅ Sample meter reading created:', sampleReading.id);
+  for (let i = 23; i >= 0; i--) {
+    const timestamp = new Date(now.getTime() - i * 60 * 60 * 1000); // each hour
+    // indexKwh increases randomly by 5-20
+    const increment = Math.floor(Math.random() * 16) + 5; // between 5 and 20
+    const currentIndexKwh = previousIndexKwh + increment;
+    const consumptionKwh = currentIndexKwh - previousIndexKwh;
+
+    await prisma.meterReading.create({
+      data: {
+        meterId: defaultMeter.id,
+        timestamp,
+        indexKwh: currentIndexKwh,
+        consumptionKwh,
+      },
+    });
+    previousIndexKwh = currentIndexKwh;
+  }
+
+  console.log('✅ 24 hourly sample meter readings created');
 
   console.log('🎉 Database seeding completed successfully!');
   console.log('');
