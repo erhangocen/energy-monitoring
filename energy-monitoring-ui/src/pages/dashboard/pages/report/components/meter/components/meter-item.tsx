@@ -53,8 +53,8 @@ const CustomTooltip = ({
             })}
           </b>
         </div>
-        <div>Ölçüm Değeri: {payload[0].payload.meter}</div>
-        <div>Değişim: {payload[0].payload.consumption}</div>
+        <div className='text-xs'>Ölçüm Değeri: {payload[0].payload.meter}</div>
+        <div className='text-xs'>Değişim: {payload[0].payload.consumption}</div>
       </div>
     );
   }
