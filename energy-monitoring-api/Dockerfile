@@ -43,6 +43,7 @@ RUN pnpm install --frozen-lockfile --prod
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/generated ./generated
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/healthcheck.js ./healthcheck.js
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs

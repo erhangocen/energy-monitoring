@@ -1,10 +1,9 @@
-version: '3.8'
-
 services:
   energy-monitoring-ui:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     ports:
       - "3000:80"
     environment:
@@ -22,6 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    platform: linux/amd64
     ports:
       - "5174:5174"
     volumes:

@@ -1,34 +1,63 @@
 version: '3.8'
 services:
-  api:
-    build: ./energy-monitoring-api
-    platform: linux/amd64
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./energy-monitoring-api/env.example
-    depends_on:
-      - db
-  ui:
-    build: ./energj-monitoring-ui
-    platform: linux/amd64
-    ports:
-      - "5173:5173"
-    env_file:
-      - ./energj-monitoring-ui/env.example
-    depends_on:
-      - api
+
   db:
-    image: postgres:15
-    platform: linux/amd64
-    restart: always
+    image: postgres:15-alpine
+    container_name: em_db
     environment:
+      POSTGRES_DB: energy_monitoring
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: energy_monitoring
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./energy-monitoring-api
+      dockerfile: Dockerfile.dev
+    container_name: em_api
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/energy_monitoring
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      PORT: 3000
+      NODE_ENV: development
+      ALLOWED_ORIGINS: http://localhost:5174,http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./energy-monitoring-api:/app      # Kod değişikliği anında yansısın
+      - /app/node_modules                 # node_modules imajdaki gibi kalsın
+    command: >
+      sh -c "
+        sleep 10 &&
+        pnpm run db:setup &&
+        pnpm run start:dev
+      "
+
+  ui:
+    build:
+      context: ./energy-monitoring-ui
+      dockerfile: Dockerfile.dev
+    container_name: em_ui
+    environment:
+      NODE_ENV: development
+      VITE_API_BASE_URL: http://api:3000
+    ports:
+      - "5174:5174"
+    depends_on:
+      - api
+    volumes:
+      - ./energy-monitoring-ui:/app
+      - /app/node_modules
+    command: pnpm dev
+
 volumes:
-  pgdata: 
+  pgdata:

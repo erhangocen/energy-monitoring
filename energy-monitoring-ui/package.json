@@ -18,9 +18,9 @@
     "start": "vite preview --port 3000 --host",
     "docker:build": "docker build -t energy-monitoring-ui .",
     "docker:run": "docker run -p 3000:3000 energy-monitoring-ui",
-    "docker:dev": "docker-compose --profile dev up",
-    "docker:prod": "docker-compose up --build",
-    "docker:down": "docker-compose down"
+    "docker:dev": "docker compose --profile dev up",
+    "docker:prod": "docker compose up --build",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
     "@faker-js/faker": "^9.0.3",
